@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const cron = require('node-cron');
 const connectdb = require('./config/mongodb');
 const Users = require('./models/users');
+const transporter = require('./config/emailTransporter');
 require('dotenv').config();
 
 //Routes
@@ -25,7 +26,7 @@ cron.schedule('0 7 * * *', async () => {
         const users = await Users.find({ date: new Date().toISOString().slice(5, 10) });
 
         // Iterate over users and send birthday emails
-        Users.forEach(async (user) => {
+        for (const user of users) {
             const mailOptions = {
                 from: process.env.EMAIL,
                 to: user.email,
@@ -35,7 +36,7 @@ cron.schedule('0 7 * * *', async () => {
 
             await transporter.sendMail(mailOptions);
             console.log(`Birthday email sent to ${user.email}`);
-        });
+        };
 
     } catch (error) {
         console.error('Error sending birthday emails:', error);
@@ -57,9 +58,8 @@ app.get('/success', (req, res) => {
 
 
 //error handler middleware
-app.use((err, req, res, next) => {
-    logger.error(err.message);
-    res.status(500).send('Something failed');
+app.get('*', (req, res) => {
+    res.render('error');
 });
 
 

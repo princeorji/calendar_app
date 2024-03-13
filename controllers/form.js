@@ -10,7 +10,7 @@ const postForm = async (req, res) => {
 
         // Send email
         const mailOptions = {
-            from: process.env.EMAIL_USER,
+            from: process.env.EMAIL,
             to: email,
             subject: 'Registration Successful',
             html: `<p>Dear ${name},</p><p>Thank you for registering with us. Your registration details are as follows:</p><ul><li>Name: ${name}</li><li>Email: ${email}</li><li>Date of Birth: ${date}</li></ul>`,
